@@ -1,0 +1,41 @@
+{
+    "autoplay": true,
+    "delay": 1000,
+    "randomTransitions": true,
+
+    "transitions": [
+        "fade-in",
+        "slide-left",
+        "slide-right",
+        "push-left",
+        "push-right",
+        "zoom-in",
+        "zoom-out",
+        "wipe-left",
+        "wipe-right",
+        "split-horizontal",
+        "split-vertical",
+        "flip-horizontal",
+        "flip-vertical",
+        "cube-rotate",
+        "curtain"
+    ],
+
+    "music": {
+        "mode": "playlist",
+
+        "sources": [
+            "music/background.mp3"
+        ],
+
+        "volume": 0.7,
+        "shuffle": true
+    },
+        "images": {
+        "shuffle": true
+    },
+
+    "keyboard": {
+        "enabled": true
+    }
+}
