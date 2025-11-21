@@ -319,7 +319,6 @@ html, body {
     inset: 0;
 
     background: rgba(0,0,0,0.35);
-    border: 1px solid rgba(255,255,255,0.25);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;
@@ -331,6 +330,9 @@ html, body {
     /* Smooth fade background too */
     transition: opacity 2s ease;
     z-index: -1;
+}
+.caption-box::after {
+    background: rgba(0, 0, 0, 0.35);
 }
 
 /* When caption is visible */
