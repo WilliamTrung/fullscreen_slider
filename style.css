@@ -332,7 +332,11 @@ html, body {
     z-index: -1;
 }
 .caption-box::after {
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
 }
 
 /* When caption is visible */
