@@ -1,18 +1,146 @@
 {
   "1.jpg": {
-    "title": "Sample Slide 1",
-    "description": "Replace this with your own caption for sample1.jpg",
+    "title": "Slide 1",
+    "description": "Replace this with your caption for 1.jpg",
     "author": "You",
     "date": "2025-01-01"
   },
-  "3.jpg": {
-    "title": "Sample Slide 2",
-    "description": "Another example caption bound to filename sample2.png",
+  "2.jpg": {
+    "title": "Slide 2",
+    "description": "Replace this with your caption for 2.jpg",
+    "author": "You",
     "date": "2025-01-02"
   },
+  "3.jpg": {
+    "title": "Slide 3",
+    "description": "Replace this with your caption for 3.jpg",
+    "author": "You",
+    "date": "2025-01-03"
+  },
+  "4.jpg": {
+    "title": "Slide 4",
+    "description": "Replace this with your caption for 4.jpg",
+    "author": "You",
+    "date": "2025-01-04"
+  },
+  "5.jpg": {
+    "title": "Slide 5",
+    "description": "Replace this with your caption for 5.jpg",
+    "author": "You",
+    "date": "2025-01-05"
+  },
   "6.jpg": {
-    "title": "Sample Slide 3",
-    "description": "Captions are looked up by exact filename.",
-    "author": "You"
+    "title": "Slide 6",
+    "description": "Replace this with your caption for 6.jpg",
+    "author": "You",
+    "date": "2025-01-06"
+  },
+  "7.jpg": {
+    "title": "Slide 7",
+    "description": "Replace this with your caption for 7.jpg",
+    "author": "You",
+    "date": "2025-01-07"
+  },
+  "8.jpg": {
+    "title": "Slide 8",
+    "description": "Replace this with your caption for 8.jpg",
+    "author": "You",
+    "date": "2025-01-08"
+  },
+  "9.jpg": {
+    "title": "Slide 9",
+    "description": "Replace this with your caption for 9.jpg",
+    "author": "You",
+    "date": "2025-01-09"
+  },
+  "10.jpg": {
+    "title": "Slide 10",
+    "description": "Replace this with your caption for 10.jpg",
+    "author": "You",
+    "date": "2025-01-10"
+  },
+  "11.jpg": {
+    "title": "Slide 11",
+    "description": "Replace this with your caption for 11.jpg",
+    "author": "You",
+    "date": "2025-01-11"
+  },
+  "12.jpg": {
+    "title": "Slide 12",
+    "description": "Replace this with your caption for 12.jpg",
+    "author": "You",
+    "date": "2025-01-12"
+  },
+  "13.jpg": {
+    "title": "Slide 13",
+    "description": "Replace this with your caption for 13.jpg",
+    "author": "You",
+    "date": "2025-01-13"
+  },
+  "14.jpg": {
+    "title": "Slide 14",
+    "description": "Replace this with your caption for 14.jpg",
+    "author": "You",
+    "date": "2025-01-14"
+  },
+  "15.jpg": {
+    "title": "Slide 15",
+    "description": "Replace this with your caption for 15.jpg",
+    "author": "You",
+    "date": "2025-01-15"
+  },
+  "16.jpg": {
+    "title": "Slide 16",
+    "description": "Replace this with your caption for 16.jpg",
+    "author": "You",
+    "date": "2025-01-16"
+  },
+  "17.jpg": {
+    "title": "Slide 17",
+    "description": "Replace this with your caption for 17.jpg",
+    "author": "You",
+    "date": "2025-01-17"
+  },
+  "18.jpg": {
+    "title": "Slide 18",
+    "description": "Replace this with your caption for 18.jpg",
+    "author": "You",
+    "date": "2025-01-18"
+  },
+  "19.jpg": {
+    "title": "Slide 19",
+    "description": "Replace this with your caption for 19.jpg",
+    "author": "You",
+    "date": "2025-01-19"
+  },
+  "20.jpg": {
+    "title": "Slide 20",
+    "description": "Replace this with your caption for 20.jpg",
+    "author": "You",
+    "date": "2025-01-20"
+  },
+  "21.jpg": {
+    "title": "Slide 21",
+    "description": "Replace this with your caption for 21.jpg",
+    "author": "You",
+    "date": "2025-01-21"
+  },
+  "22.jpg": {
+    "title": "Slide 22",
+    "description": "Replace this with your caption for 22.jpg",
+    "author": "You",
+    "date": "2025-01-22"
+  },
+  "23.jpg": {
+    "title": "Slide 23",
+    "description": "Replace this with your caption for 23.jpg",
+    "author": "You",
+    "date": "2025-01-23"
+  },
+  "24.jpg": {
+    "title": "Slide 24",
+    "description": "Replace this with your caption for 24.jpg",
+    "author": "You",
+    "date": "2025-01-24"
   }
 }
