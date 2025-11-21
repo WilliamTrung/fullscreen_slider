@@ -1,196 +1,235 @@
 // slider.core.js
-// Main Pixi + GSAP slideshow engine
+// CSS-only fullscreen slider for TV (no Pixi, no GSAP)
 
 (async function () {
   'use strict';
 
-  // Wait for DOM ready
   if (document.readyState === 'loading') {
     await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
   }
 
   const config = await fetch('config.json').then(r => r.json());
-  const captions = await fetch('captions.json').then(r => r.json()).catch(() => ({}));
+  const captionsMap = await fetch('captions.json').then(r => r.json()).catch(() => ({}));
 
-  const sliderEl = document.getElementById('slider');
-  const audio = document.getElementById('bgm');
-  const captionTitle = document.getElementById('caption-title');
-  const captionDesc = document.getElementById('caption-description');
-  const captionMeta = document.getElementById('caption-meta');
-  const debugOverlay = document.getElementById('debug-overlay');
+  const sliderEl        = document.getElementById('slider');
+  const captionTitleEl  = document.getElementById('caption-title');
+  const captionDescEl   = document.getElementById('caption-description');
+  const captionMetaEl   = document.getElementById('caption-meta');
+  const debugEl         = document.getElementById('debug-overlay');
+  const audioEl         = document.getElementById('bgm');
 
-  if (!window.PIXI) {
-    console.error('Pixi.js not found. Slider cannot start.');
+  if (!sliderEl) {
+    console.error('Missing #slider element');
     return;
   }
 
-  const app = new PIXI.Application({
-    resizeTo: window,
-    backgroundColor: 0x000000
-  });
-  sliderEl.innerHTML = '';
-  sliderEl.appendChild(app.view);
-
-  // Build image list from config
-  let imageList = window.SliderUtils.buildImageListFromConfig(config);
-  if (!imageList.length) {
-    console.warn('No images configured in config.images.sources');
+  const images = window.SliderUtils.buildImageListFromConfig(config);
+  if (!images.length) {
+    console.error('No images configured in config.json');
     return;
   }
 
-  if (config.images?.shuffle !== false) {
-    window.SliderUtils.shuffle(imageList);
+  // Shuffle initial order if enabled
+  if (config.images && config.images.shuffle) {
+    window.SliderUtils.shuffle(images);
   }
 
-  let currentIdx = 0;
-  let currentSprite = null;
-  let isAnimating = false;
+  const availableTransitions = Array.isArray(config.transitions) ? config.transitions.slice() : ['fade'];
 
-  function showFirstImage() {
-    const img = imageList[currentIdx];
-    currentSprite = window.SliderUtils.createFittedSprite(app, img);
-    currentSprite.alpha = 1;
-    app.stage.addChild(currentSprite);
+  // Build two slide layers for cross-fade / slide transitions
+  const slideA = document.createElement('div');
+  slideA.className = 'slide';
+  const slideB = document.createElement('div');
+  slideB.className = 'slide';
 
-    window.SliderUtils.updateCaptionByFilename(
-      captions,
-      img.filename,
-      captionTitle,
-      captionDesc,
-      captionMeta
-    );
-    window.SliderUtils.fadeInCaption([captionTitle, captionDesc, captionMeta]);
-    window.SliderUtils.updateDebugOverlay(config, debugOverlay, img, 'initial');
-  }
+  sliderEl.appendChild(slideA);
+  sliderEl.appendChild(slideB);
 
-  // handle resize
-  window.addEventListener('resize', () => {
-    if (!currentSprite) return;
-    const img = imageList[currentIdx];
-    const newSprite = window.SliderUtils.createFittedSprite(app, img);
-    newSprite.alpha = currentSprite.alpha;
-    app.stage.removeChild(currentSprite);
-    currentSprite = newSprite;
-    app.stage.addChild(currentSprite);
-  });
+  let currentEl = slideA;
+  let nextEl = slideB;
+  let currentIndex = 0;
+  let isTransitioning = false;
+  let autoplay = !!config.autoplay;
+  let autoplayTimer = null;
 
-  // Music engine
-  async function startMusic() {
-    if (!config.music || !Array.isArray(config.music.sources)) return;
-
-    let playlist = [];
-
-    for (let src of config.music.sources) {
-      const ok = await fetch(src).then(r => r.ok).catch(() => false);
-      if (ok) playlist.push(src);
-      else console.warn('Music not found:', src);
-    }
-
-    if (!playlist.length) return;
-
+  // --- Music engine (local + URL) ---
+  if (audioEl && config.music && Array.isArray(config.music.sources) && config.music.sources.length) {
+    let musicSources = config.music.sources.slice();
     if (config.music.shuffle) {
-      window.SliderUtils.shuffle(playlist);
+      window.SliderUtils.shuffle(musicSources);
+    }
+    let musicIndex = 0;
+
+    function playNextTrack() {
+      if (!musicSources.length) return;
+      const src = musicSources[musicIndex % musicSources.length];
+      musicIndex++;
+      audioEl.src = src;
+      if (typeof config.music.volume === 'number') {
+        audioEl.volume = Math.min(1, Math.max(0, config.music.volume));
+      }
+      audioEl.play().catch(() => {});
     }
 
-    let idx = 0;
-    function playNext() {
-      audio.src = playlist[idx];
-      audio.volume = config.music.volume ?? 0.7;
-      audio.play().catch(err => console.warn('Music autoplay blocked:', err));
-      idx = (idx + 1) % playlist.length;
-    }
+    audioEl.addEventListener('ended', playNextTrack);
+    playNextTrack();
 
-    audio.addEventListener('ended', playNext);
-    playNext();
+    window.__toggleMusic = function () {
+      if (audioEl.paused) {
+        audioEl.play().catch(() => {});
+      } else {
+        audioEl.pause();
+      }
+    };
   }
 
-  function nextSlide() {
-    if (isAnimating || !imageList.length) return;
+  function setSlideImage(el, img) {
+    el.style.backgroundImage = `url('${img.src}')`;
+    el.dataset.index = String(img.index);
+    el.dataset.filename = img.filename;
+  }
 
-    window.SliderUtils.fadeOutCaption([captionTitle, captionDesc, captionMeta]);
+  function getCurrentImage() {
+    return images[currentIndex % images.length];
+  }
 
-    const fromImg = imageList[currentIdx];
-    const fromSprite = currentSprite;
+  function getNextIndex(delta) {
+    const len = images.length;
+    return (currentIndex + delta + len) % len;
+  }
 
-    currentIdx++;
-    if (currentIdx >= imageList.length) {
-      window.SliderUtils.shuffle(imageList); // shuffle every loop
-      currentIdx = 0;
-    }
+  function updateCaptionsForImage(img) {
+    if (!captionTitleEl || !captionDescEl || !captionMetaEl) return;
+    const cap = window.SliderUtils.getCaptionForFilename(captionsMap, img.filename) || {};
 
-    const toImg = imageList[currentIdx];
-    const toSprite = window.SliderUtils.createFittedSprite(app, toImg);
-    app.stage.addChild(toSprite);
+    captionTitleEl.textContent = cap.title || '';
+    captionDescEl.textContent  = cap.description || '';
+    const metaParts = [];
+    if (cap.author) metaParts.push(cap.author);
+    if (cap.date) metaParts.push(cap.date);
+    captionMetaEl.textContent = metaParts.join(' • ');
 
-    const effectName = window.SliderUtils.pickTransitionName(config, config.transitions);
-    isAnimating = true;
+    // Simple fade-in animation via CSS class
+    captionTitleEl.classList.remove('caption-fade-in');
+    captionDescEl.classList.remove('caption-fade-in');
+    captionMetaEl.classList.remove('caption-fade-in');
+    void captionTitleEl.offsetWidth;
+    captionTitleEl.classList.add('caption-fade-in');
+    captionDescEl.classList.add('caption-fade-in');
+    captionMetaEl.classList.add('caption-fade-in');
+  }
 
-    window.SliderTransitions.run(effectName, app, fromSprite, toSprite, () => {
-      currentSprite = toSprite;
-      isAnimating = false;
+  function showInitial() {
+    const img = getCurrentImage();
+    setSlideImage(currentEl, img);
+    currentEl.style.opacity = '1';
+    nextEl.style.opacity = '0';
+    updateCaptionsForImage(img);
+    window.SliderUtils.updateDebugOverlay(debugEl, config.debug && config.debug.enabled, img, '(initial)');
+  }
 
-      window.SliderUtils.updateCaptionByFilename(
-        captions,
-        toImg.filename,
-        captionTitle,
-        captionDesc,
-        captionMeta
-      );
-      window.SliderUtils.fadeInCaption([captionTitle, captionDesc, captionMeta]);
-      window.SliderUtils.updateDebugOverlay(config, debugOverlay, toImg, effectName);
+  function scheduleAutoplay() {
+    clearTimeout(autoplayTimer);
+    if (!autoplay) return;
+    const delay = typeof config.delay === 'number' ? config.delay : 4000;
+    autoplayTimer = setTimeout(() => goTo(1), delay);
+  }
+
+  function goTo(delta) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    const fromImg = getCurrentImage();
+    currentIndex = getNextIndex(delta);
+    const toImg = getCurrentImage();
+
+    setSlideImage(nextEl, toImg);
+
+    const effectName = window.SliderUtils.pickTransitionName(config, availableTransitions);
+    window.SliderUtils.updateDebugOverlay(debugEl, config.debug && config.debug.enabled, toImg, effectName);
+
+    window.SliderTransitions.run(effectName, currentEl, nextEl, () => {
+      // Swap roles
+      const tmp = currentEl;
+      currentEl = nextEl;
+      nextEl = tmp;
+
+      updateCaptionsForImage(toImg);
+      isTransitioning = false;
+      scheduleAutoplay();
     });
   }
 
-  // Autoplay
-  if (config.autoplay !== false) {
-    setInterval(nextSlide, config.delay ?? 5000);
-  }
-
-  // Keyboard
-  if (config.keyboard?.enabled) {
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight') {
-        nextSlide();
-      } else if (e.key === 'ArrowLeft') {
-        currentIdx = (currentIdx - 2 + imageList.length) % imageList.length;
-        nextSlide();
-      } else if (e.key === ' ') {
-        e.preventDefault();
-        if (!audio.src) return;
-        audio.paused ? audio.play() : audio.pause();
+  // Keyboard controls (PC)
+  if (config.keyboard && config.keyboard.enabled !== false) {
+    window.addEventListener('keydown', (ev) => {
+      switch (ev.key) {
+        case 'ArrowRight':
+        case 'Right':
+          goTo(1);
+          break;
+        case 'ArrowLeft':
+        case 'Left':
+          goTo(-1);
+          break;
+        case ' ':
+          autoplay = !autoplay;
+          scheduleAutoplay();
+          break;
       }
     });
   }
 
-  // Start systems
-  showFirstImage();
-  startMusic();
-
-})();
-
-
-// === TV Remote Minimal Controls ===
-window.addEventListener("keydown", (ev) => {
-    switch(ev.key) {
-        case "ArrowRight":
-        case "Right":
-            window.__sliderNext && window.__sliderNext();
-            break;
-        case "ArrowLeft":
-        case "Left":
-            window.__sliderPrev && window.__sliderPrev();
-            break;
-        case "ArrowUp":
-        case "Up":
-            window.__toggleDebug && window.__toggleDebug();
-            break;
-        case "ArrowDown":
-        case "Down":
-            window.__toggleCaptions && window.__toggleCaptions();
-            break;
-        case "Enter":
-        case "OK":
-            window.__toggleAutoplay && window.__toggleAutoplay();
-            break;
+  // Minimal TV remote controls (Left/Right/Up/Down/OK)
+  window.__sliderNext = () => goTo(1);
+  window.__sliderPrev = () => goTo(-1);
+  window.__toggleAutoplay = () => {
+    autoplay = !autoplay;
+    scheduleAutoplay();
+  };
+  window.__toggleDebug = () => {
+    if (!debugEl) return;
+    const enabled = !(config.debug && config.debug.enabled === false);
+    const currentlyVisible = debugEl.style.display === 'block';
+    if (currentlyVisible) {
+      debugEl.style.display = 'none';
+    } else {
+      const img = getCurrentImage();
+      window.SliderUtils.updateDebugOverlay(debugEl, enabled, img, '(manual)');
     }
-});
+  };
+  window.__toggleCaptions = () => {
+    const container = document.querySelector('.caption-container');
+    if (!container) return;
+    const hidden = container.style.display === 'none';
+    container.style.display = hidden ? 'block' : 'none';
+  };
+
+  window.addEventListener('keydown', (ev) => {
+    switch (ev.key) {
+      case 'ArrowRight':
+      case 'Right':
+        window.__sliderNext();
+        break;
+      case 'ArrowLeft':
+      case 'Left':
+        window.__sliderPrev();
+        break;
+      case 'ArrowUp':
+      case 'Up':
+        window.__toggleDebug();
+        break;
+      case 'ArrowDown':
+      case 'Down':
+        window.__toggleCaptions();
+        break;
+      case 'Enter':
+      case 'OK':
+        window.__toggleAutoplay();
+        break;
+    }
+  });
+
+  showInitial();
+  scheduleAutoplay();
+})();
