@@ -294,7 +294,6 @@ html, body {
     bottom: 4vh;
     left: 50%;
     transform: translateX(-50%);
-
     padding: 18px 32px;
     max-width: 85%;
     text-align: center;
@@ -304,24 +303,42 @@ html, body {
     line-height: 1.4;
     color: #fff;
 
-    /* Frosted Glass */
+    /* Make text above background layer */
+    position: relative;
+    z-index: 20;
+
+    /* fade of caption text */
+    opacity: 0.6;
+    transition: opacity 2s ease;
+}
+
+/* >>> Frosted glass background layer <<< */
+.caption-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
     background: rgba(0,0,0,0.35);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-
     border-radius: 20px;
     box-shadow: 0 8px 22px rgba(0,0,0,0.5);
-    text-shadow: 0 0 14px rgba(0,0,0,0.95);
 
-    opacity: 0.6;
+    /* START INVISIBLE */
+    opacity: 0;
+
+    /* Smooth fade background too */
     transition: opacity 2s ease;
-
-    z-index: 20;
+    z-index: -1;
 }
 
-/* When caption is active */
+/* When caption is visible */
 .caption-box.visible {
-    opacity: 1;
+    opacity: 1; /* text fades */
+}
+
+.caption-box.visible::before {
+    opacity: 1; /* background fades */
 }
 
 
