@@ -6,30 +6,28 @@ window.SliderTransitions = (function () {
 
   // Map logical effect names from config.json to CSS class names
   const EFFECT_CLASS = {
-    'fade':             { incoming: 'fade-in',       outgoing: 'fade-out' },
-    'crossfade':        { incoming: 'fade-in',       outgoing: 'fade-out' },
-    'slide-left':       { incoming: 'slide-left',    outgoing: 'push-left' },
-    'slide-right':      { incoming: 'slide-right',   outgoing: 'push-right' },
-    'zoom-in':          { incoming: 'zoom-in',       outgoing: 'fade-out' },
-    'zoom-out':         { incoming: 'zoom-out',      outgoing: 'fade-out' },
-    'kenburns':         { incoming: 'kenburns',      outgoing: 'fade-out' },
-    'rotate':           { incoming: 'rotate-in',     outgoing: 'fade-out' },
-    'blur-fade':        { incoming: 'blur-fade',     outgoing: 'fade-out' },
+  'fade':        { incoming: 'fade-in',   outgoing: 'fade-out' },
+  'crossfade':   { incoming: 'fade-in',   outgoing: 'fade-out' },
 
-    // Extra ones already present in style.css (optional)
-    'wipe-left':        { incoming: 'wipe-left',     outgoing: 'fade-out' },
-    'wipe-right':       { incoming: 'wipe-right',    outgoing: 'fade-out' },
-    'split-horizontal': { incoming: 'split-horizontal', outgoing: 'fade-out' },
-    'split-vertical':   { incoming: 'split-vertical',   outgoing: 'fade-out' },
-    'flip-horizontal':  { incoming: 'flip-horizontal',  outgoing: 'fade-out' },
-    'flip-vertical':    { incoming: 'flip-vertical',    outgoing: 'fade-out' },
-    'cube-rotate':      { incoming: 'cube-rotate',      outgoing: 'fade-out' },
-    'curtain-open':     { incoming: 'curtain-open',     outgoing: 'fade-out' },
-    'checkerboard':     { incoming: 'checkerboard',     outgoing: 'fade-out' },
-    'stripes':          { incoming: 'stripes',          outgoing: 'fade-out' },
-    'book-open':        { incoming: 'book-open',        outgoing: 'fade-out' },
-    'water-ripple':     { incoming: 'water-ripple',     outgoing: 'fade-out' }
-  };
+  'slide-left':  { incoming: 'slide-left',  outgoing: 'fade-out' },
+  'slide-right': { incoming: 'slide-right', outgoing: 'fade-out' },
+  'slide-up':    { incoming: 'slide-up',    outgoing: 'fade-out' },
+  'slide-down':  { incoming: 'slide-down',  outgoing: 'fade-out' },
+
+  'zoom-in':     { incoming: 'zoom-in',   outgoing: 'fade-out' },
+  'zoom-out':    { incoming: 'zoom-out',  outgoing: 'fade-out' },
+
+  'blur-fade':   { incoming: 'blur-fade', outgoing: 'fade-out' },
+
+  'rotate-in':   { incoming: 'rotate-in', outgoing: 'fade-out' },
+
+  'wipe-left':   { incoming: 'wipe-left',  outgoing: 'fade-out' },
+  'wipe-right':  { incoming: 'wipe-right', outgoing: 'fade-out' },
+  'wipe-up':     { incoming: 'wipe-up',    outgoing: 'fade-out' },
+  'wipe-down':   { incoming: 'wipe-down',  outgoing: 'fade-out' },
+
+  'kenburns':    { incoming: 'kenburns', outgoing: 'fade-out' }
+};
 
   function clearEffectClasses(el) {
     if (!el) return;

@@ -458,3 +458,134 @@ html, body {
   0% { opacity:0; filter:brightness(1.8) contrast(0.5) saturate(0.2); }
   100% { opacity:1; filter:none; }
 }
+
+
+/* Ensure slide background covers fully and doesn't tile */
+.slide {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+
+/* === REAL CSS-ONLY TRANSITIONS === */
+
+/* Fade & Crossfade */
+.fade-in {
+    animation: fadeIn 1s ease forwards;
+}
+.fade-out {
+    animation: fadeOut 1s ease forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Slide directions (incoming) */
+.slide-left {
+    animation: slideInLeft 1.1s ease-out forwards;
+}
+.slide-right {
+    animation: slideInRight 1.1s ease-out forwards;
+}
+.slide-up {
+    animation: slideInUp 1.1s ease-out forwards;
+}
+.slide-down {
+    animation: slideInDown 1.1s ease-out forwards;
+}
+@keyframes slideInLeft {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(-100%); opacity: 0; }
+    to   { transform: translateX(0);     opacity: 1; }
+}
+@keyframes slideInUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes slideInDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* Zoom In / Out */
+.zoom-in {
+    animation: zoomInMid 1.2s ease-out forwards;
+}
+.zoom-out {
+    animation: zoomOutMid 1.2s ease-out forwards;
+}
+@keyframes zoomInMid {
+    from { transform: scale(1.25); opacity: 0; }
+    to   { transform: scale(1.0);  opacity: 1; }
+}
+@keyframes zoomOutMid {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1.0);  opacity: 1; }
+}
+
+/* Blur Fade */
+.blur-fade {
+    animation: blurFadeMid 1.0s ease-out forwards;
+}
+@keyframes blurFadeMid {
+    from { filter: blur(18px); opacity: 0; transform: scale(1.02); }
+    to   { filter: blur(0);    opacity: 1; transform: scale(1.0);  }
+}
+
+/* Rotate In */
+.rotate-in {
+    animation: rotateInSoft 1.1s ease-out forwards;
+}
+@keyframes rotateInSoft {
+    from { transform: rotateZ(-10deg) scale(1.05); opacity: 0; }
+    to   { transform: rotateZ(0deg)  scale(1.0);   opacity: 1; }
+}
+
+/* Wipes using clip-path */
+.wipe-left {
+    animation: wipeLeftMid 1.0s ease-out forwards;
+}
+.wipe-right {
+    animation: wipeRightMid 1.0s ease-out forwards;
+}
+.wipe-up {
+    animation: wipeUpMid 1.0s ease-out forwards;
+}
+.wipe-down {
+    animation: wipeDownMid 1.0s ease-out forwards;
+}
+@keyframes wipeLeftMid {
+    from { clip-path: inset(0 0 0 100%); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes wipeRightMid {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes wipeUpMid {
+    from { clip-path: inset(100% 0 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes wipeDownMid {
+    from { clip-path: inset(0 0 100% 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+
+/* Ken Burns - mild pan and zoom */
+.kenburns {
+    animation: kenBurnsMid 4s ease-out forwards;
+}
+@keyframes kenBurnsMid {
+    from { transform: scale(1.18) translate(-3%, -3%); }
+    to   { transform: scale(1.0)  translate(0, 0); }
+}
