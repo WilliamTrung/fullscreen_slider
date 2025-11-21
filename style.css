@@ -284,3 +284,163 @@ html, body {
 
 .caption-fade-in { animation: captionFadeIn 0.6s ease-out; }
 @keyframes captionFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+
+
+/* === High Visibility Frosted Caption for TV === */
+.caption-box {
+    position: absolute;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 18px 32px;
+    max-width: 85%;
+    text-align: center;
+    font-size: 3vh;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #fff;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+    text-shadow: 0 0 14px rgba(0,0,0,0.95);
+    opacity: 0;
+    transition: opacity 0.55s ease;
+    z-index: 20;
+}
+.caption-box.visible {
+    opacity: 1;
+}
+
+/* Remote Buttons (TV-Friendly) */
+#remote-ui {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 2vh;
+    z-index: 9999;
+}
+.remote-btn {
+    font-size: 3vh;
+    padding: 1vh 2.2vh;
+    border-radius: 1vh;
+    border: none;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0,0,0,0.5);
+    transition: transform 0.15s ease, background 0.2s;
+}
+.remote-btn:hover {
+    transform: scale(1.15);
+    background: rgba(255,255,255,0.28);
+}
+
+
+
+/* Light Leak */
+.light-leak {
+  animation: lightLeakAnim 1.4s ease both;
+}
+@keyframes lightLeakAnim {
+  0% { opacity:0; background: radial-gradient(circle at 20% 20%, rgba(255,200,150,0.6), transparent 60%); }
+  50% { opacity:1; background: none; }
+  100% { opacity:1; }
+}
+
+
+
+/* Vignette Zoom */
+.vignette-zoom {
+  animation: vignetteZoomAnim 1.4s ease both;
+}
+@keyframes vignetteZoomAnim {
+  0% { opacity:0; filter: brightness(1.3) blur(2px); }
+  100% { opacity:1; filter: brightness(1) blur(0); }
+}
+
+
+
+/* Soft Tilt */
+.soft-tilt {
+  animation: softTiltAnim 1.2s ease both;
+}
+@keyframes softTiltAnim {
+  from { opacity:0; transform: rotateX(12deg) translateY(20px); }
+  to   { opacity:1; transform: rotateX(0deg) translateY(0); }
+}
+
+
+
+/* Parallax Slide */
+.parallax-slide {
+  animation: parallaxSlideAnim 1.4s ease both;
+}
+@keyframes parallaxSlideAnim {
+  from { opacity:0; transform: translateX(40px) scale(1.05); }
+  to   { opacity:1; transform: translateX(0) scale(1); }
+}
+
+
+
+/* Lens Flare Sweep */
+.lens-flare { animation:lensFlareAnim 1.6s ease both; position:relative; }
+@keyframes lensFlareAnim {
+  0% { opacity:0; }
+  30%{ opacity:1; }
+  100% { opacity:1; }
+}
+.lens-flare::before{
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(120deg, rgba(255,200,150,0.4), transparent 60%);
+  animation:lensFlareSweep 1.6s ease both;
+}
+@keyframes lensFlareSweep {
+  0% { transform:translateX(-80%); opacity:0.4; }
+  60% { opacity:0.7; }
+  100% { transform:translateX(120%); opacity:0; }
+}
+
+
+
+/* RGB Split */
+.rgb-split { animation:rgbSplitAnim 1.4s ease both; }
+@keyframes rgbSplitAnim {
+  0% { opacity:0; filter:drop-shadow(-4px 0 red) drop-shadow(4px 0 cyan); }
+  100% { opacity:1; filter:none; }
+}
+
+
+
+/* Blur Through */
+.blur-through { animation:blurThroughAnim 1.3s ease both; }
+@keyframes blurThroughAnim {
+  0% { opacity:0; filter:blur(20px); }
+  100% { opacity:1; filter:blur(0); }
+}
+
+
+
+/* Soft Pan */
+.soft-pan { animation:softPanAnim 1.5s ease both; }
+@keyframes softPanAnim {
+  0% { opacity:0; transform:translateX(40px); }
+  100% { opacity:1; transform:translateX(0); }
+}
+
+
+
+/* Photo Fade */
+.photo-fade { animation:photoFadeAnim 1.6s ease both; }
+@keyframes photoFadeAnim {
+  0% { opacity:0; filter:brightness(1.8) contrast(0.5) saturate(0.2); }
+  100% { opacity:1; filter:none; }
+}

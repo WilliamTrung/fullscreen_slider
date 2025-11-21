@@ -1,51 +1,77 @@
 {
-  "autoplay": true,
-  "delay": 4000,
-  "randomTransitions": true,
-  "transitions": [
-  "fade",
-  "crossfade",
-  "slide-left",
-  "slide-right",
-  "rotate",
-  "blur-fade"
-],
-  "images": {
-    "shuffle": true,
-    "sources": [
-      "images/1.jpg",
-      "images/2.jpg",
-      "images/3.jpg",
-      "images/4.jpg",
-      "images/5.jpg",
-      "images/6.jpg",
-      "images/7.jpg",
-      "images/8.jpg",
-      "images/9.jpg",
-      "images/10.jpg",
-      "images/11.jpg",
-      "images/12.jpg",
-      "images/13.jpg",
-      "images/14.jpg",
-      "images/15.jpg",
-      "images/16.jpg",
-      "images/17.jpg",
-      "images/18.jpg",
-      "images/19.jpg",
-      "images/20.jpg"
-    ]
-  },
-  "music": {
-    "shuffle": true,
-    "volume": 0.5,
-    "sources": [
-      "music/background.mp3"
-    ]
-  },
-  "keyboard": {
-    "enabled": true
-  },
-  "debug": {
-    "enabled": true
-  }
+    "autoplay": true,
+    "delay": 4000,
+    "randomTransitions": true,
+    "transitions": [
+        "fade",
+        "slide-left",
+        "slide-right",
+        "slide-up",
+        "slide-down",
+        "zoom-in",
+        "zoom-out",
+        "kenburns",
+        "rotate",
+        "blur",
+        "sharpen",
+        "grayscale",
+        "sepia",
+        "flip-horizontal",
+        "flip-vertical",
+        "crossfade",
+        "ripple-soft",
+        "curtain-left",
+        "curtain-right",
+        "wipe-left",
+        "wipe-right",
+        "wipe-up",
+        "wipe-down",
+        "light-leak",
+        "vignette-zoom",
+        "soft-tilt",
+        "parallax-slide",
+        "lens-flare",
+        "rgb-split",
+        "blur-through",
+        "soft-pan",
+        "photo-fade"
+    ],
+    "images": {
+        "shuffle": true,
+        "sources": [
+            "images/1.jpg",
+            "images/2.jpg",
+            "images/3.jpg",
+            "images/4.jpg",
+            "images/5.jpg",
+            "images/6.jpg",
+            "images/7.jpg",
+            "images/8.jpg",
+            "images/9.jpg",
+            "images/10.jpg",
+            "images/11.jpg",
+            "images/12.jpg",
+            "images/13.jpg",
+            "images/14.jpg",
+            "images/15.jpg",
+            "images/16.jpg",
+            "images/17.jpg",
+            "images/18.jpg",
+            "images/19.jpg",
+            "images/20.jpg"
+        ]
+    },
+    "music": {
+        "shuffle": true,
+        "volume": 0.5,
+        "sources": [
+            "music/background.mp3"
+        ]
+    },
+    "keyboard": {
+        "enabled": true
+    },
+    "debug": {
+        "enabled": true
+    }
 }

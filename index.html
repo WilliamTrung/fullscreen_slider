@@ -1,31 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Fullscreen TV Slider (CSS Only)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <title>Fullscreen TV Slider</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="slider"></div>
 
-  <div class="top-bar">
-    <span>TV Slider • Mid-level effects</span>
-    <span class="right">
-      ← / → : Previous / Next &nbsp;•&nbsp;
-      Space: Play / Pause Music
-    </span>
-  </div>
+    <!-- Slider container -->
+    <div id="slider-container"></div>
 
-  <div class="caption-container">
-    <div id="caption-title" class="caption-title"></div>
-    <div id="caption-description" class="caption-desc"></div>
-    <div id="caption-meta" class="caption-meta"></div>
-  </div>
+    <!-- Caption -->
+    <div id="captionBox" class="caption-box"></div>
 
-  <div id="debug-overlay" class="debug-overlay"></div>
+    <!-- Remote control UI -->
+    <div id="remote-ui">
+        <button class="remote-btn" data-key="ArrowLeft">⟵</button>
+        <button class="remote-btn" data-key="Enter">OK</button>
+        <button class="remote-btn" data-key="ArrowRight">⟶</button>
+    </div>
 
-  <!-- Background music -->
-  <audio id="bgm" loop></audio>
+    <!-- JS Files -->
+    <script src="js/slider.utils.js"></script>
+    <script src="js/slider.transitions.js"></script>
+    <script src="js/slider.core.js"></script>
+
+    <!-- Remote script -->
+    <script>
+    document.querySelectorAll('.remote-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.dispatchEvent(
+                new KeyboardEvent('keydown', { key: btn.dataset.key })
+            );
+        };
+    });
+    </script>
+
 </body>
 </html>
