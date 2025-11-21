@@ -167,3 +167,30 @@
   startMusic();
 
 })();
+
+
+// === TV Remote Minimal Controls ===
+window.addEventListener("keydown", (ev) => {
+    switch(ev.key) {
+        case "ArrowRight":
+        case "Right":
+            window.__sliderNext && window.__sliderNext();
+            break;
+        case "ArrowLeft":
+        case "Left":
+            window.__sliderPrev && window.__sliderPrev();
+            break;
+        case "ArrowUp":
+        case "Up":
+            window.__toggleDebug && window.__toggleDebug();
+            break;
+        case "ArrowDown":
+        case "Down":
+            window.__toggleCaptions && window.__toggleCaptions();
+            break;
+        case "Enter":
+        case "OK":
+            window.__toggleAutoplay && window.__toggleAutoplay();
+            break;
+    }
+});
