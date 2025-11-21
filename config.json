@@ -4,24 +4,15 @@
   "randomTransitions": true,
   "transitions": [
   "fade",
+  "crossfade",
   "slide-left",
   "slide-right",
-  "liquid",
-  "glitch",
-  "warp",
-  "ripple",
-  "pixelate",
-  "morph",
-  "page-fold",
-  "book-open",
-  "glass-warp",
-  "liquid-ripple",
-  "book-3d",
-  "book-3d-close",
-  "water-wave",
-  "film-burn",
-  "fog-dissolve"
-  ],
+  "zoom-in",
+  "zoom-out",
+  "kenburns",
+  "rotate",
+  "blur-fade"
+],
   "images": {
     "shuffle": true,
     "sources": [

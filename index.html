@@ -1,71 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Fullscreen Pixi + GSAP Slider</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Fullscreen TV Slider</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
       height: 100%;
-      background: #000;
       overflow: hidden;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #fff;
     }
+
     #slider {
-      position: fixed;
+      position: absolute;
       inset: 0;
       background: #000;
     }
-    #caption-container {
-      position: fixed;
-      left: 40px;
-      bottom: 40px;
-      color: #fff;
-      text-shadow: 0 0 12px rgba(0,0,0,0.9);
+
+    .caption-container {
+      position: absolute;
+      left: 4%;
+      bottom: 6%;
+      max-width: 50vw;
       pointer-events: none;
-      max-width: 60vw;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
     }
-    #caption-title {
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1.2;
+
+    .caption-title {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
     }
-    #caption-description {
-      font-size: 18px;
+
+    .caption-desc {
+      font-size: 1.1rem;
       opacity: 0.9;
-      margin-top: 4px;
+      margin-bottom: 0.3rem;
     }
-    #caption-meta {
-      font-size: 14px;
+
+    .caption-meta {
+      font-size: 0.95rem;
       opacity: 0.7;
-      margin-top: 3px;
     }
-    #debug-overlay {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.5);
-      color: #00ffc3;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    .debug-overlay {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      background: rgba(0,0,0,0.45);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      line-height: 1.3;
+      max-width: 260px;
       white-space: pre-line;
       pointer-events: none;
+      color: #0f0;
       display: none;
     }
-    audio#bgm {
-      display: none;
+
+    .top-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      padding: 0.4rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+      pointer-events: none;
+    }
+
+    .top-bar span {
+      opacity: 0.8;
+    }
+
+    .top-bar .right {
+      text-align: right;
     }
   </style>
 
-  <!-- External libs -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <!-- PixiJS v7 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.4.2/pixi.min.js" defer></script>
 
-  <!-- Our slider scripts -->
+  <!-- Slider scripts -->
   <script src="js/slider.utils.js" defer></script>
   <script src="js/slider.transitions.js" defer></script>
   <script src="js/slider.core.js" defer></script>
@@ -73,14 +100,23 @@
 <body>
   <div id="slider"></div>
 
-  <audio id="bgm" loop></audio>
-
-  <div id="caption-container">
-    <div id="caption-title"></div>
-    <div id="caption-description"></div>
-    <div id="caption-meta"></div>
+  <div class="top-bar">
+    <span>TV Slider • Mid-level effects</span>
+    <span class="right">
+      ← / → : Previous / Next &nbsp;•&nbsp;
+      Space: Play / Pause Music
+    </span>
   </div>
 
-  <div id="debug-overlay"></div>
+  <div class="caption-container">
+    <div id="caption-title" class="caption-title"></div>
+    <div id="caption-desc" class="caption-desc"></div>
+    <div id="caption-meta" class="caption-meta"></div>
+  </div>
+
+  <div id="debug-overlay" class="debug-overlay"></div>
+
+  <!-- Background music -->
+  <audio id="bgm" loop></audio>
 </body>
 </html>
