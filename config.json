@@ -1,58 +1,37 @@
 {
-    "autoplay": true,
-    "delay": 2500,
-    "randomTransitions": true,
-
-    "transitions": [
-         "fade-in",
-         "slide-left",
-         "slide-right",
-         "push-left",
-         "push-right",
-         "zoom-in",
-         "zoom-out",
-        "wipe-left",
-        "wipe-right",
-        "split-horizontal",
-        "split-vertical",
-        "flip-horizontal",
-        "flip-vertical",
-        "cube-rotate",
-        "curtain-open",
-        "checkerboard",
-        "random-stripes",
-        "page-turn",
-        "book-open",
-        "water-ripple",
-        "glass-distort",
-        "ken-burns"
-    ],
-    "gsapTransitions": [
-        "liquid",
-        "ripple",
-        "zoom-blur",
-        "glitch",
-        "pixelate",
-        "page-peel",
-        "warp",
-        "morph"
-    ],
-    "images": {
-        "shuffle": true
-    },
-
-    "music": {
-        "shuffle": true,
-        "volume": 0.8,
-        "sources": [
-            "music/background.mp3"
-        ]
-    },
-
-    "keyboard": {
-        "enabled": true
-    },
-    "debug": {
-        "enabled": true
-    }
+  "autoplay": true,
+  "delay": 2500,
+  "randomTransitions": true,
+  "transitions": [
+    "fade",
+    "slide-left",
+    "slide-right",
+    "liquid",
+    "glitch",
+    "warp",
+    "ripple",
+    "pixelate",
+    "morph"
+  ],
+  "images": {
+    "shuffle": true,
+    "sources": [
+      "images/sample1.jpg",
+      "images/sample2.png",
+      "images/sample3.webp"
+    ]
+  },
+  "music": {
+    "shuffle": true,
+    "volume": 0.8,
+    "sources": [
+      "music/background.mp3"
+    ]
+  },
+  "keyboard": {
+    "enabled": true
+  },
+  "debug": {
+    "enabled": true
+  }
 }
