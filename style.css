@@ -314,7 +314,7 @@ html, body {
     text-shadow: 0 0 14px rgba(0,0,0,0.95);
 
     opacity: 0.6;
-    transition: opacity 0.55s ease;
+    transition: opacity 2s ease;
 
     z-index: 20;
 }
