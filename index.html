@@ -2,41 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Fullscreen TV Slider</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fullscreen Slider</title>
 
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <!-- Slider container -->
-    <div id="slider-container"></div>
+    <!-- REQUIRED FOR SLIDER (previously missing) -->
+    <div id="slider" class="slider-container"></div>
 
-    <!-- Caption -->
-    <div id="captionBox" class="caption-box"></div>
+    <!-- OPTIONAL: Caption UI -->
+    <div id="caption" class="caption frosted"></div>
 
-    <!-- Remote control UI -->
-    <div id="remote-ui">
-        <button class="remote-btn" data-key="ArrowLeft">⟵</button>
-        <button class="remote-btn" data-key="Enter">OK</button>
-        <button class="remote-btn" data-key="ArrowRight">⟶</button>
-    </div>
+    <!-- OPTIONAL debug -->
+    <div id="debug" class="debug-overlay"></div>
 
-    <!-- JS Files -->
     <script src="js/slider.utils.js"></script>
     <script src="js/slider.transitions.js"></script>
     <script src="js/slider.core.js"></script>
-
-    <!-- Remote script -->
-    <script>
-    document.querySelectorAll('.remote-btn').forEach(btn => {
-        btn.onclick = () => {
-            document.dispatchEvent(
-                new KeyboardEvent('keydown', { key: btn.dataset.key })
-            );
-        };
-    });
-    </script>
 
 </body>
 </html>

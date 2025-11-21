@@ -311,6 +311,20 @@ html, body {
     transition: opacity 0.55s ease;
     z-index: 20;
 }
+.caption.frosted {
+    backdrop-filter: blur(12px);
+    background: rgba(0,0,0,0.35);
+    border-radius: 12px;
+    padding: 14px 22px;
+    color: white;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+    max-width: 80%;
+    margin: auto;
+    bottom: 40px;
+    text-align: center;
+}
+
 .caption-box.visible {
     opacity: 1;
 }
