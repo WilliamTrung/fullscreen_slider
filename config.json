@@ -27,7 +27,16 @@
         "glass-distort",
         "ken-burns"
     ],
-
+    "gsapTransitions": [
+        "liquid",
+        "ripple",
+        "zoom-blur",
+        "glitch",
+        "pixelate",
+        "page-peel",
+        "warp",
+        "morph"
+    ],
     "images": {
         "shuffle": true
     },
