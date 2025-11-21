@@ -491,43 +491,41 @@ window.SliderTransitions = (function () {
 
       const vertData = mesh.geometry.getBuffer('aVertexPosition').data;
 
-      gsap.to(
-        { t: 0 },
-        {
-          t: 1,
-          duration: 1.5,
-          ease: "power3.inOut",
-          onUpdate: function (self) {
-            const progress = self.targets()[0].t;
-            const angle = progress * Math.PI * 0.9;
+      const state = { t: 0 };
+      gsap.to(state, {
+        t: 1,
+        duration: 1.5,
+        ease: "power3.inOut",
+        onUpdate: function () {
+          const progress = state.t;
+          const angle = progress * Math.PI * 0.9;
 
-            for (let iy = 0; iy <= segY; iy++) {
-              for (let ix = 0; ix <= segX; ix++) {
-                const id = (iy * (segX + 1) + ix) * 2;
-                const ox = vertices[id];
-                const oy = vertices[id + 1];
+          for (let iy = 0; iy <= segY; iy++) {
+            for (let ix = 0; ix <= segX; ix++) {
+              const id = (iy * (segX + 1) + ix) * 2;
+              const ox = vertices[id];
+              const oy = vertices[id + 1];
 
-                const bend = Math.sin((ix / segX) * Math.PI) * progress * 120;
+              const bend = Math.sin((ix / segX) * Math.PI) * progress * 120;
 
-                vertData[id] = ox * Math.cos(angle) - bend;
-                vertData[id + 1] = oy;
-              }
+              vertData[id] = ox * Math.cos(angle) - bend;
+              vertData[id + 1] = oy;
             }
-            mesh.geometry.getBuffer('aVertexPosition').update();
-          },
-          onComplete: () => {
-            gsap.to(to, {
-              alpha: 1,
-              duration: 0.4,
-              ease: "power2.out",
-              onComplete: () => {
-                mesh.destroy({ children: true, texture: false, baseTexture: false });
-                done();
-              }
-            });
           }
+          mesh.geometry.getBuffer('aVertexPosition').update();
+        },
+        onComplete: () => {
+          gsap.to(to, {
+            alpha: 1,
+            duration: 0.4,
+            ease: "power2.out",
+            onComplete: () => {
+              mesh.destroy({ children: true, texture: false, baseTexture: false });
+              done();
+            }
+          });
         }
-      );
+      });
     },
 
     // ------------------------------------------------------------
@@ -580,45 +578,43 @@ window.SliderTransitions = (function () {
 
       const vertData = mesh.geometry.getBuffer('aVertexPosition').data;
 
-      gsap.to(
-        { t: 0 },
-        {
-          t: 1,
-          duration: 1.5,
-          ease: "power3.inOut",
-          onUpdate: function (self) {
-            const progress = self.targets()[0].t;
-            const angle = (1 - progress) * Math.PI * 0.9;
+      const state2 = { t: 0 };
+      gsap.to(state2, {
+        t: 1,
+        duration: 1.5,
+        ease: "power3.inOut",
+        onUpdate: function () {
+          const progress = state2.t;
+          const angle = (1 - progress) * Math.PI * 0.9;
 
-            for (let iy = 0; iy <= segY; iy++) {
-              for (let ix = 0; ix <= segX; ix++) {
-                const id = (iy * (segX + 1) + ix) * 2;
-                const ox = vertices[id];
-                const oy = vertices[id + 1];
+          for (let iy = 0; iy <= segY; iy++) {
+            for (let ix = 0; ix <= segX; ix++) {
+              const id = (iy * (segX + 1) + ix) * 2;
+              const ox = vertices[id];
+              const oy = vertices[id + 1];
 
-                const bend = Math.sin((ix / segX) * Math.PI) * (1 - progress) * 120;
+              const bend = Math.sin((ix / segX) * Math.PI) * (1 - progress) * 120;
 
-                vertData[id] = ox * Math.cos(angle) - bend;
-                vertData[id + 1] = oy;
-              }
+              vertData[id] = ox * Math.cos(angle) - bend;
+              vertData[id + 1] = oy;
             }
-            mesh.geometry.getBuffer('aVertexPosition').update();
-          },
-          onComplete: () => {
-            gsap.to(from, {
-              alpha: 0,
-              duration: 0.4,
-              ease: "power2.in",
-              onComplete: () => {
-                app.stage.removeChild(from);
-                app.stage.removeChild(mesh);
-                mesh.destroy({ children: true, texture: false, baseTexture: false });
-                done();
-              }
-            });
           }
+          mesh.geometry.getBuffer('aVertexPosition').update();
+        },
+        onComplete: () => {
+          gsap.to(from, {
+            alpha: 0,
+            duration: 0.4,
+            ease: "power2.in",
+            onComplete: () => {
+              app.stage.removeChild(from);
+              app.stage.removeChild(mesh);
+              mesh.destroy({ children: true, texture: false, baseTexture: false });
+              done();
+            }
+          });
         }
-      );
+      });
     },
 
     // --------------------------------------------
