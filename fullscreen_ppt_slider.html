@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fullscreen PPT Slider</title>
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+}
+.slider {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+.slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease;
+    will-change: transform, opacity, clip-path;
+    backface-visibility: hidden;
+}
+.slide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+.fade-in { opacity: 1 !important; }
+.slide-left { animation: slideLeft 1.2s forwards; }
+@keyframes slideLeft { from { transform: translateX(100%);} to { transform: translateX(0);} }
+.slide-right { animation: slideRight 1.2s forwards; }
+@keyframes slideRight { from { transform: translateX(-100%);} to { transform: translateX(0);} }
+.push-left { animation: pushLeft 1.2s forwards; }
+@keyframes pushLeft { from { transform: translateX(0);} to { transform: translateX(-100%);} }
+.push-right { animation: pushRight 1.2s forwards; }
+@keyframes pushRight { from { transform: translateX(0);} to { transform: translateX(100%);} }
+.zoom-in { animation: zoomIn 1.2s forwards; }
+@keyframes zoomIn { from { transform: scale(1.4); opacity: 0;} to { transform: scale(1); opacity: 1;} }
+.zoom-out { animation: zoomOut 1.2s forwards; }
+@keyframes zoomOut { from { transform: scale(0.6); opacity: 0;} to { transform: scale(1); opacity: 1;} }
+.wipe-left { animation: wipeLeft 1s forwards;}
+@keyframes wipeLeft { from { clip-path: inset(0 0 0 100%);} to { clip-path: inset(0 0 0 0);} }
+.wipe-right { animation: wipeRight 1s forwards;}
+@keyframes wipeRight { from { clip-path: inset(0 100% 0 0);} to { clip-path: inset(0 0 0 0);} }
+.split-horizontal { animation: splitH 1.2s forwards;}
+@keyframes splitH { from { clip-path: inset(50% 0 50% 0);} to { clip-path: inset(0 0 0 0);} }
+.split-vertical { animation: splitV 1.2s forwards;}
+@keyframes splitV { from { clip-path: inset(0 50% 0 50%);} to { clip-path: inset(0 0 0 0);} }
+.flip-horizontal { animation: flipH 1.3s forwards;}
+@keyframes flipH { from { transform: rotateY(-180deg); opacity:0;} to { transform: rotateY(0); opacity:1;} }
+.flip-vertical { animation: flipV 1.3s forwards;}
+@keyframes flipV { from { transform: rotateX(-180deg); opacity:0;} to { transform: rotateX(0); opacity:1;} }
+.cube-rotate { animation: cubeRotate 1.2s forwards; transform-origin:center right; perspective:1500px;}
+@keyframes cubeRotate { from { transform: rotateY(90deg); opacity: 0;} to { transform: rotateY(0); opacity: 1;} }
+.curtain { animation: curtainOpen 1.2s forwards;}
+@keyframes curtainOpen { from { clip-path: inset(0 0 0 100%);} to { clip-path: inset(0 0 0 0);} }
+</style>
+</head>
+<body>
+<div class="slider">
+    <div class="slide active"><img src="https://picsum.photos/id/1015/1920/1080"></div>
+    <div class="slide"><img src="https://picsum.photos/id/1016/1920/1080"></div>
+    <div class="slide"><img src="https://picsum.photos/id/1025/1920/1080"></div>
+    <div class="slide"><img src="https://picsum.photos/id/1035/1920/1080"></div>
+</div>
+<script>
+const slides=document.querySelectorAll(".slide");let index=0;
+const transitions=["fade-in","slide-left","slide-right","push-left","push-right",
+"zoom-in","zoom-out","wipe-left","wipe-right","split-horizontal","split-vertical",
+"flip-horizontal","flip-vertical","cube-rotate","curtain"];
+function nextSlide(){
+  let current=slides[index];current.style.opacity=0;
+  index=(index+1)%slides.length;let next=slides[index];
+  next.className="slide";
+  let effect=transitions[Math.floor(Math.random()*transitions.length)];
+  next.classList.add(effect);
+  next.style.opacity=1;
+}
+setInterval(nextSlide,5000);
+</script>
+</body>
+</html>
