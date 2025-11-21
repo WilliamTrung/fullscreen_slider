@@ -18,21 +18,26 @@
         "flip-horizontal",
         "flip-vertical",
         "cube-rotate",
-        "curtain"
+        "curtain-open",
+        "checkerboard",
+        "random-stripes",
+        "page-turn",
+        "book-open",
+        "water-ripple",
+        "glass-distort",
+        "ken-burns"
     ],
 
-    "music": {
-        "mode": "playlist",
-
-        "sources": [
-            "music/background.mp3"
-        ],
-
-        "volume": 0.7,
+    "images": {
         "shuffle": true
     },
-        "images": {
-        "shuffle": true
+
+    "music": {
+        "shuffle": true,
+        "volume": 0.8,
+        "sources": [
+            "music/background.mp3"
+        ]
     },
 
     "keyboard": {
