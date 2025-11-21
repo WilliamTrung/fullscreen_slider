@@ -1,5 +1,5 @@
 // slider.transitions.js
-// GSAP + Pixi.js cinematic transitions (stable + advanced version)
+// GSAP + Pixi.js cinematic transitions (full version with advanced effects)
 
 window.SliderTransitions = (function () {
   'use strict';
@@ -41,7 +41,7 @@ window.SliderTransitions = (function () {
     });
   }
 
-  // Shared displacement map (for glass / liquid ripple)
+  // Shared displacement map (for glass / liquid-ripple / water-wave)
   let displacementSprite = null;
   let displacementFilter = null;
 
@@ -56,7 +56,6 @@ window.SliderTransitions = (function () {
       canvas.height = 256;
       const ctx = canvas.getContext("2d");
 
-      // simple noise texture
       const imgData = ctx.createImageData(canvas.width, canvas.height);
       for (let i = 0; i < imgData.data.length; i += 4) {
         const v = Math.random() * 255;
@@ -71,7 +70,6 @@ window.SliderTransitions = (function () {
       displacementSprite = new PIXI.Sprite(tex);
       displacementSprite.anchor.set(0.5);
 
-      // repeat wrap so we can move it
       if (tex.baseTexture && PIXI.WRAP_MODES) {
         tex.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
       }
@@ -298,7 +296,6 @@ window.SliderTransitions = (function () {
     // --------------------------------------------
     "pixelate": function (app, from, to, done) {
       if (!PIXI.filters || !PIXI.filters.BlurFilter) {
-        // fallback to simple fade if filter not available
         fade(app, from, to, done);
         return;
       }
@@ -374,24 +371,20 @@ window.SliderTransitions = (function () {
     // PAGE-FOLD (page turn–style)
     // --------------------------------------------
     "page-fold": function (app, from, to, done) {
-      // Start new slide squashed horizontally
       gsap.set(to, { alpha: 0 });
       gsap.set(to.scale, { x: 0.0, y: to.scale.y });
 
-      // From slide folds away
       gsap.to(from.scale, {
         x: 0,
         duration: 0.7,
         ease: "power2.in"
       });
-
       gsap.to(from, {
         alpha: 0,
         duration: 0.7,
         ease: "power2.in"
       });
 
-      // Then new slide unfolds
       gsap.to(to.scale, {
         x: to.scale.x,
         duration: 0.9,
@@ -412,11 +405,12 @@ window.SliderTransitions = (function () {
     },
 
     // --------------------------------------------
-    // BOOK-OPEN (two-page spread feel)
+    // BOOK-OPEN (simple two-page spread feel)
     // --------------------------------------------
     "book-open": function (app, from, to, done) {
-      // from: fold out left
-      gsap.set(from.pivot, { x: 0, y: 0 }); // pivot at center via anchor
+      gsap.set(to, { alpha: 0 });
+      gsap.set(to.scale, { x: 0, y: to.scale.y });
+
       gsap.to(from.scale, {
         x: 0,
         duration: 0.8,
@@ -427,10 +421,6 @@ window.SliderTransitions = (function () {
         duration: 0.8,
         ease: "power2.in"
       });
-
-      // to: unfold from center
-      gsap.set(to, { alpha: 0 });
-      gsap.set(to.scale, { x: 0, y: to.scale.y });
 
       gsap.to(to.scale, {
         x: to.scale.x,
@@ -451,13 +441,192 @@ window.SliderTransitions = (function () {
       });
     },
 
+    // ------------------------------------------------------------
+    // 3D BOOK OPEN (Mesh page bend)
+    // ------------------------------------------------------------
+    "book-3d": function (app, from, to, done) {
+      const w = app.renderer.width;
+      const h = app.renderer.height;
+
+      const segX = 20, segY = 4;
+      const geometry = new PIXI.MeshGeometry();
+      const vertices = [];
+      const uvs = [];
+      const indices = [];
+
+      for (let iy = 0; iy <= segY; iy++) {
+        for (let ix = 0; ix <= segX; ix++) {
+          const x = (ix / segX) * w - w / 2;
+          const y = (iy / segY) * h - h / 2;
+          vertices.push(x, y);
+          uvs.push(ix / segX, iy / segY);
+        }
+      }
+
+      for (let iy = 0; iy < segY; iy++) {
+        for (let ix = 0; ix < segX; ix++) {
+          const a = iy * (segX + 1) + ix;
+          const b = a + 1;
+          const c = a + (segX + 1);
+          const d = c + 1;
+          indices.push(a, b, c, b, d, c);
+        }
+      }
+
+      geometry.addAttribute('aVertexPosition', vertices)
+              .addAttribute('aTextureCoord', uvs)
+              .addIndex(indices);
+
+      const mesh = new PIXI.Mesh(
+        geometry,
+        new PIXI.MeshMaterial(from.texture, { alpha: 1 })
+      );
+      mesh.position.set(w / 2, h / 2);
+
+      app.stage.addChild(mesh);
+      app.stage.removeChild(from);
+
+      gsap.set(to, { alpha: 0, x: w / 2, y: h / 2 });
+      app.stage.addChild(to);
+
+      const vertData = mesh.geometry.getBuffer('aVertexPosition').data;
+
+      gsap.to(
+        { t: 0 },
+        {
+          t: 1,
+          duration: 1.5,
+          ease: "power3.inOut",
+          onUpdate: function (self) {
+            const progress = self.targets()[0].t;
+            const angle = progress * Math.PI * 0.9;
+
+            for (let iy = 0; iy <= segY; iy++) {
+              for (let ix = 0; ix <= segX; ix++) {
+                const id = (iy * (segX + 1) + ix) * 2;
+                const ox = vertices[id];
+                const oy = vertices[id + 1];
+
+                const bend = Math.sin((ix / segX) * Math.PI) * progress * 120;
+
+                vertData[id] = ox * Math.cos(angle) - bend;
+                vertData[id + 1] = oy;
+              }
+            }
+            mesh.geometry.getBuffer('aVertexPosition').update();
+          },
+          onComplete: () => {
+            gsap.to(to, {
+              alpha: 1,
+              duration: 0.4,
+              ease: "power2.out",
+              onComplete: () => {
+                mesh.destroy({ children: true, texture: false, baseTexture: false });
+                done();
+              }
+            });
+          }
+        }
+      );
+    },
+
+    // ------------------------------------------------------------
+    // 3D BOOK CLOSE (reverse of 3D open)
+    // ------------------------------------------------------------
+    "book-3d-close": function (app, from, to, done) {
+      const w = app.renderer.width;
+      const h = app.renderer.height;
+
+      const segX = 20, segY = 4;
+      const geometry = new PIXI.MeshGeometry();
+      const vertices = [];
+      const uvs = [];
+      const indices = [];
+
+      for (let iy = 0; iy <= segY; iy++) {
+        for (let ix = 0; ix <= segX; ix++) {
+          const x = (ix / segX) * w - w / 2;
+          const y = (iy / segY) * h - h / 2;
+          vertices.push(x, y);
+          uvs.push(ix / segX, iy / segY);
+        }
+      }
+
+      for (let iy = 0; iy < segY; iy++) {
+        for (let ix = 0; ix < segX; ix++) {
+          const a = iy * (segX + 1) + ix;
+          const b = a + 1;
+          const c = a + (segX + 1);
+          const d = c + 1;
+          indices.push(a, b, c, b, d, c);
+        }
+      }
+
+      geometry.addAttribute('aVertexPosition', vertices)
+              .addAttribute('aTextureCoord', uvs)
+              .addIndex(indices);
+
+      const mesh = new PIXI.Mesh(
+        geometry,
+        new PIXI.MeshMaterial(to.texture, { alpha: 1 })
+      );
+      mesh.position.set(w / 2, h / 2);
+
+      app.stage.addChild(mesh);
+      app.stage.removeChild(to);
+
+      gsap.set(from, { alpha: 1, x: w / 2, y: h / 2 });
+      app.stage.addChild(from);
+
+      const vertData = mesh.geometry.getBuffer('aVertexPosition').data;
+
+      gsap.to(
+        { t: 0 },
+        {
+          t: 1,
+          duration: 1.5,
+          ease: "power3.inOut",
+          onUpdate: function (self) {
+            const progress = self.targets()[0].t;
+            const angle = (1 - progress) * Math.PI * 0.9;
+
+            for (let iy = 0; iy <= segY; iy++) {
+              for (let ix = 0; ix <= segX; ix++) {
+                const id = (iy * (segX + 1) + ix) * 2;
+                const ox = vertices[id];
+                const oy = vertices[id + 1];
+
+                const bend = Math.sin((ix / segX) * Math.PI) * (1 - progress) * 120;
+
+                vertData[id] = ox * Math.cos(angle) - bend;
+                vertData[id + 1] = oy;
+              }
+            }
+            mesh.geometry.getBuffer('aVertexPosition').update();
+          },
+          onComplete: () => {
+            gsap.to(from, {
+              alpha: 0,
+              duration: 0.4,
+              ease: "power2.in",
+              onComplete: () => {
+                app.stage.removeChild(from);
+                app.stage.removeChild(mesh);
+                mesh.destroy({ children: true, texture: false, baseTexture: false });
+                done();
+              }
+            });
+          }
+        }
+      );
+    },
+
     // --------------------------------------------
     // GLASS-WARP (displacement "glass" effect)
     // --------------------------------------------
     "glass-warp": function (app, from, to, done) {
       const dp = ensureDisplacement(app);
       if (!dp) {
-        // fallback if DisplacementFilter unavailable
         fade(app, from, to, done);
         return;
       }
@@ -466,7 +635,6 @@ window.SliderTransitions = (function () {
       const previousFilters = to.filters ? to.filters.slice() : null;
       to.filters = previousFilters ? previousFilters.concat([filter]) : [filter];
 
-      // start subtle glass warp
       gsap.set(to, { alpha: 0, scale: to.scale.x * 1.02 });
       gsap.set(filter.scale, { x: 80, y: 80 });
 
@@ -509,7 +677,6 @@ window.SliderTransitions = (function () {
     "liquid-ripple": function (app, from, to, done) {
       const dp = ensureDisplacement(app);
       if (!dp) {
-        // fallback if DisplacementFilter unavailable
         fade(app, from, to, done);
         return;
       }
@@ -555,6 +722,155 @@ window.SliderTransitions = (function () {
           done();
         }
       });
+    },
+
+    // --------------------------------------------
+    // WATER WAVE SHADER-LIKE (using displacement)
+    // --------------------------------------------
+    "water-wave": function (app, from, to, done) {
+      const dp = ensureDisplacement(app);
+      if (!dp) {
+        fade(app, from, to, done);
+        return;
+      }
+
+      const { sprite, filter } = dp;
+      const previousFilters = to.filters ? to.filters.slice() : null;
+      to.filters = previousFilters ? previousFilters.concat([filter]) : [filter];
+
+      gsap.set(to, {
+        alpha: 0,
+        scale: to.scale.x * 1.02
+      });
+
+      gsap.set(filter.scale, { x: 0, y: 80 });
+
+      gsap.to(filter.scale, {
+        x: 80,
+        y: 0,
+        duration: 1.6,
+        ease: "sine.inOut"
+      });
+
+      gsap.to(sprite, {
+        x: sprite.x + 200,
+        duration: 1.6,
+        ease: "sine.inOut"
+      });
+
+      gsap.to(to, {
+        alpha: 1,
+        duration: 1.4,
+        ease: "power2.out"
+      });
+
+      gsap.to(from, {
+        alpha: 0,
+        duration: 1.0,
+        ease: "power2.in",
+        onComplete: () => {
+          app.stage.removeChild(from);
+          to.filters = previousFilters;
+          done();
+        }
+      });
+    },
+
+    // --------------------------------------------
+    // FILM-BURN (Cinematic light leak fade)
+    // --------------------------------------------
+    "film-burn": function (app, from, to, done) {
+      const w = app.renderer.width;
+      const h = app.renderer.height;
+
+      const burn = new PIXI.Graphics();
+      burn.beginFill(0xffdd88);
+      burn.drawRect(0, 0, w, h);
+      burn.endFill();
+      burn.alpha = 0;
+      app.stage.addChild(burn);
+
+      gsap.set(to, { alpha: 0 });
+      app.stage.addChild(to);
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          app.stage.removeChild(from);
+          app.stage.removeChild(burn);
+          burn.destroy();
+          done();
+        }
+      });
+
+      tl.to(burn, {
+        alpha: 1,
+        duration: 0.25,
+        ease: "power4.in"
+      })
+        .to(burn, {
+          alpha: 0.7,
+          duration: 0.15,
+          ease: "power3.out"
+        })
+        .to(to, {
+          alpha: 1,
+          duration: 0.8,
+          ease: "power3.out"
+        }, "-=0.3")
+        .to(burn, {
+          alpha: 0,
+          duration: 0.6,
+          ease: "power2.out"
+        });
+    },
+
+    // --------------------------------------------
+    // FOG DISSOLVE (atmospheric fade)
+    // --------------------------------------------
+    "fog-dissolve": function (app, from, to, done) {
+      const w = app.renderer.width;
+      const h = app.renderer.height;
+
+      const fog = new PIXI.Graphics();
+      const color = 0xaaaaaa;
+      const alpha = 0.0;
+      fog.beginFill(color, alpha);
+      fog.drawRect(0, 0, w, h);
+      fog.endFill();
+      app.stage.addChild(fog);
+
+      gsap.set(to, { alpha: 0 });
+      app.stage.addChild(to);
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          app.stage.removeChild(from);
+          app.stage.removeChild(fog);
+          fog.destroy();
+          done();
+        }
+      });
+
+      tl.to(fog, {
+        alpha: 0.9,
+        duration: 1.0,
+        ease: "sine.inOut"
+      })
+        .to(from, {
+          alpha: 0,
+          duration: 0.7,
+          ease: "power2.in"
+        }, "-=0.6")
+        .to(to, {
+          alpha: 1,
+          duration: 1.0,
+          ease: "power2.out"
+        }, "-=0.3")
+        .to(fog, {
+          alpha: 0,
+          duration: 0.8,
+          ease: "power2.out"
+        });
     }
 
   }; // end transitions map

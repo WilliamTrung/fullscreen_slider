@@ -15,7 +15,12 @@
   "page-fold",
   "book-open",
   "glass-warp",
-  "liquid-ripple"
+  "liquid-ripple",
+  "book-3d",
+  "book-3d-close",
+  "water-wave",
+  "film-burn",
+  "fog-dissolve"
   ],
   "images": {
     "shuffle": true,

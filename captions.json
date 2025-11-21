@@ -1,16 +1,16 @@
 {
-  "sample1.jpg": {
+  "1.jpg": {
     "title": "Sample Slide 1",
     "description": "Replace this with your own caption for sample1.jpg",
     "author": "You",
     "date": "2025-01-01"
   },
-  "sample2.png": {
+  "3.jpg": {
     "title": "Sample Slide 2",
     "description": "Another example caption bound to filename sample2.png",
     "date": "2025-01-02"
   },
-  "sample3.webp": {
+  "6.jpg": {
     "title": "Sample Slide 3",
     "description": "Captions are looked up by exact filename.",
     "author": "You"
