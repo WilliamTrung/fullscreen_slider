@@ -1,62 +1,121 @@
-(async function() {
+(async function () {
 
+    /********************************************
+     * CONFIG LOADING
+     ********************************************/
     const config = await fetch("config.json").then(r => r.json());
 
     const slider = document.getElementById("slider");
+    const audio = document.getElementById("bgm");
 
-    // Load images automatically
-    const images = [];
-    for (let i = 1; i < 500; i++) {
-        const path = `images/${i}.jpg`;
-        const exists = await fetch(path).then(r => r.ok).catch(() => false);
-        if (!exists) break;
-        images.push(path);
+
+    /********************************************
+     * IMAGE AUTO-DETECTION (jpg/png/webp/jpeg/gif)
+     ********************************************/
+    async function detectImages() {
+        const formats = ["jpg", "jpeg", "png", "webp", "gif"];
+        const list = [];
+
+        for (let i = 1; i <= 2000; i++) {
+            let found = false;
+
+            for (let ext of formats) {
+                const path = `images/${i}.${ext}`;
+
+                const exists = await fetch(path)
+                    .then(r => r.ok)
+                    .catch(() => false);
+
+                if (exists) {
+                    list.push(path);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) break;  
+        }
+        return list;
     }
 
-    // SHUFFLE BY INDEX
-    if (config.images?.shuffle) {
-        images.sort(() => Math.random() - 0.5);
+
+    /********************************************
+     * PERFECT SHUFFLE (Fisher-Yates)
+     ********************************************/
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
     }
-    images.forEach(src => {
-        const div = document.createElement("div");
+
+
+    /********************************************
+     * LOAD ALL IMAGES
+     ********************************************/
+    let imageList = await detectImages();
+
+    if (config.images?.shuffle !== false) {
+        shuffle(imageList); // shuffle on startup
+    }
+
+    // Create slide elements
+    imageList.forEach(src => {
+        let div = document.createElement("div");
         div.className = "slide";
         div.innerHTML = `<img src="${src}">`;
         slider.appendChild(div);
     });
 
     const slides = document.querySelectorAll(".slide");
+
     let index = 0;
     slides[0].style.opacity = 1;
 
-    const transitions = config.transitions;
 
-    /* --------------------------
-       MUSIC ENGINE
-       -------------------------- */
-    const audio = document.getElementById("bgm");
+    /********************************************
+     * MUSIC ENGINE (LOCAL + REMOTE MIXED)
+     ********************************************/
+    async function loadLocalMusicFiles() {
+        const local = [];
+
+        // detect local files named 1.mp3, 2.mp3, ...
+        for (let i = 1; i <= 500; i++) {
+            const path = `music/${i}.mp3`;
+
+            const exists = await fetch(path)
+                .then(r => r.ok)
+                .catch(() => false);
+
+            if (exists) local.push(path);
+        }
+        return local;
+    }
 
     async function startMusic() {
         if (!config.music) return;
 
-        const playlist = config.music.sources;
+        const remote = config.music.remoteSources ?? [];
+        const local = await loadLocalMusicFiles();
 
-        if (!playlist || playlist.length === 0) return;
+        // FULL MUSIC POOL
+        let playlist = [...local, ...remote];
 
-        let order = [...playlist];
+        if (playlist.length === 0) return;
 
         if (config.music.shuffle) {
-            order.sort(() => Math.random() - 0.5);
+            shuffle(playlist);
         }
 
-        let idx = 0;
+        let musicIndex = 0;
 
         function playNext() {
-            audio.src = order[idx];
+            audio.src = playlist[musicIndex];
             audio.volume = config.music.volume ?? 0.7;
 
-            audio.play().catch(e => console.warn("Autoplay blocked:", e));
+            audio.play().catch(err => console.log("Music autoplay blocked"));
 
-            idx = (idx + 1) % order.length;
+            musicIndex = (musicIndex + 1) % playlist.length;
         }
 
         audio.addEventListener("ended", playNext);
@@ -66,36 +125,104 @@
 
     startMusic();
 
-    /* --------------------------
-       SLIDESHOW ENGINE
-       -------------------------- */
+
+
+    /********************************************
+     * ALL TRANSITIONS (including new ones)
+     ********************************************/
+    const allTransitions = [
+        "fade-in",
+        "slide-left",
+        "slide-right",
+        "push-left",
+        "push-right",
+        "zoom-in",
+        "zoom-out",
+        "wipe-left",
+        "wipe-right",
+        "split-horizontal",
+        "split-vertical",
+        "flip-horizontal",
+        "flip-vertical",
+        "cube-rotate",
+        "curtain-open",
+
+        // NEW REQUESTED TRANSITIONS
+        "checkerboard",
+        "random-stripes",
+        "page-turn",
+        "book-open",
+        "water-ripple",
+        "glass-distort",
+        "ken-burns"
+    ];
+
+
+    /********************************************
+     * NEXT SLIDE FUNCTION (SHUFFLE EVERY LOOP)
+     ********************************************/
     function nextSlide() {
         let current = slides[index];
         current.style.opacity = 0;
 
-        index = (index + 1) % slides.length;
+        index++;
+
+        // If we reached the end → shuffle again and reset
+        if (index >= slides.length) {
+            shuffle(imageList);
+            shuffleSlidesToMatchNewOrder();
+            index = 0;
+        }
+
         let next = slides[index];
 
         next.className = "slide";
 
-        let effect = config.randomTransitions
-            ? transitions[Math.floor(Math.random() * transitions.length)]
-            : transitions[0];
-
+        // Random transition
+        let effect = allTransitions[Math.floor(Math.random() * allTransitions.length)];
         next.classList.add(effect);
+
         next.style.opacity = 1;
     }
 
-    if (config.autoplay) {
-        setInterval(nextSlide, config.delay);
+
+    /********************************************
+     * REORDER slides DOM to match reshuffled list
+     ********************************************/
+    function shuffleSlidesToMatchNewOrder() {
+        slider.innerHTML = "";
+        imageList.forEach(src => {
+            let div = document.createElement("div");
+            div.className = "slide";
+            div.innerHTML = `<img src="${src}">`;
+            slider.appendChild(div);
+        });
+        // Refresh NodeList
+        slides = document.querySelectorAll(".slide");
     }
 
+
+    /********************************************
+     * AUTOPLAY
+     ********************************************/
+    if (config.autoplay !== false) {
+        setInterval(nextSlide, config.delay ?? 5000);
+    }
+
+
+    /********************************************
+     * KEYBOARD CONTROLS
+     ********************************************/
     if (config.keyboard?.enabled) {
         document.addEventListener("keydown", e => {
             if (e.key === "ArrowRight") nextSlide();
             if (e.key === "ArrowLeft") {
                 index = (index - 2 + slides.length) % slides.length;
                 nextSlide();
+            }
+            if (e.key === " ") {
+                e.preventDefault();
+                audio.paused ? audio.play() : audio.pause();
             }
         });
     }
