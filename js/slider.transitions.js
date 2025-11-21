@@ -497,6 +497,11 @@ window.SliderTransitions = (function () {
         duration: 1.5,
         ease: "power3.inOut",
         onUpdate: function () {
+          // Safety guard: mesh may be destroyed or geometry unavailable
+          if (!mesh || mesh.destroyed || !mesh.geometry) return;
+          const buffer = mesh.geometry.getBuffer('aVertexPosition');
+          if (!buffer || !buffer.data) return;
+
           const progress = state.t;
           const angle = progress * Math.PI * 0.9;
 
@@ -512,7 +517,7 @@ window.SliderTransitions = (function () {
               vertData[id + 1] = oy;
             }
           }
-          mesh.geometry.getBuffer('aVertexPosition').update();
+          buffer.update();
         },
         onComplete: () => {
           gsap.to(to, {
@@ -584,6 +589,11 @@ window.SliderTransitions = (function () {
         duration: 1.5,
         ease: "power3.inOut",
         onUpdate: function () {
+          // Safety guard: mesh may be destroyed or geometry unavailable
+          if (!mesh || mesh.destroyed || !mesh.geometry) return;
+          const buffer = mesh.geometry.getBuffer('aVertexPosition');
+          if (!buffer || !buffer.data) return;
+
           const progress = state2.t;
           const angle = (1 - progress) * Math.PI * 0.9;
 
@@ -599,7 +609,7 @@ window.SliderTransitions = (function () {
               vertData[id + 1] = oy;
             }
           }
-          mesh.geometry.getBuffer('aVertexPosition').update();
+          buffer.update();
         },
         onComplete: () => {
           gsap.to(from, {
