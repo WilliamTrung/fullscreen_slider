@@ -1,6 +1,6 @@
 {
   "autoplay": true,
-  "delay": 2500,
+  "delay": 5000,
   "randomTransitions": true,
   "transitions": [
     "fade",
