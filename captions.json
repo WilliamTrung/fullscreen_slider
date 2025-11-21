@@ -1,0 +1,19 @@
+{
+    "1": {
+        "title": "My vacation",
+        "description": "At the seaside 2024",
+        "author": "William",
+        "date": "2024-12-21"
+    },
+    "2": {
+        "title": "Family party",
+        "description": "A lovely moment",
+        "author": "Mom",
+        "date": "2025-01-01"
+    },
+    "5": {
+        "title": "Random shot",
+        "description": "Captured using Pixel 9",
+        "date": "2025-02-18"
+    }
+}
