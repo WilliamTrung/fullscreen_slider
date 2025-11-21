@@ -306,7 +306,6 @@ html, body {
 
     /* Frosted Glass */
     background: rgba(0,0,0,0.35);
-    border: 1px solid rgba(255,255,255,0.25);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 
@@ -314,7 +313,7 @@ html, body {
     box-shadow: 0 8px 22px rgba(0,0,0,0.5);
     text-shadow: 0 0 14px rgba(0,0,0,0.95);
 
-    opacity: 0;
+    opacity: 0.6;
     transition: opacity 0.55s ease;
 
     z-index: 20;
