@@ -9,6 +9,7 @@
   }
 
   const config = await fetch('config.json').then(r => r.json());
+  console.log(config);
   const captionsMap = await fetch('captions.json').then(r => r.json()).catch(() => ({}));
 
   const sliderEl        = document.getElementById('slider');
