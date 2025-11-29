@@ -17,11 +17,9 @@
   const captionDescEl   = document.getElementById('caption-description');
   const captionMetaEl   = document.getElementById('caption-meta');
   const debugEl         = document.getElementById('debug-overlay');
-  const audioEl         = document.getElementById('bgm');
 
   if (!sliderEl) {
     console.error('Missing #slider element');
-    return;
   }
 
   const images = window.SliderUtils.buildImageListFromConfig(config);
@@ -30,14 +28,12 @@
     return;
   }
 
-  // Shuffle initial order if enabled
   if (config.images && config.images.shuffle) {
     window.SliderUtils.shuffle(images);
   }
 
   const availableTransitions = Array.isArray(config.transitions) ? config.transitions.slice() : ['fade'];
 
-  // Build two slide layers for cross-fade / slide transitions
   const slideA = document.createElement('div');
   slideA.className = 'slide';
   const slideB = document.createElement('div');
@@ -52,37 +48,6 @@
   let isTransitioning = false;
   let autoplay = !!config.autoplay;
   let autoplayTimer = null;
-
-  // --- Music engine (local + URL) ---
-  if (audioEl && config.music && Array.isArray(config.music.sources) && config.music.sources.length) {
-    let musicSources = config.music.sources.slice();
-    if (config.music.shuffle) {
-      window.SliderUtils.shuffle(musicSources);
-    }
-    let musicIndex = 0;
-
-    function playNextTrack() {
-      if (!musicSources.length) return;
-      const src = musicSources[musicIndex % musicSources.length];
-      musicIndex++;
-      audioEl.src = src;
-      if (typeof config.music.volume === 'number') {
-        audioEl.volume = Math.min(1, Math.max(0, config.music.volume));
-      }
-      audioEl.play().catch(() => {});
-    }
-
-    audioEl.addEventListener('ended', playNextTrack);
-    playNextTrack();
-
-    window.__toggleMusic = function () {
-      if (audioEl.paused) {
-        audioEl.play().catch(() => {});
-      } else {
-        audioEl.pause();
-      }
-    };
-  }
 
   function setSlideImage(el, img) {
     el.style.backgroundImage = `url('${img.src}')`;
@@ -110,7 +75,6 @@
     if (cap.date) metaParts.push(cap.date);
     captionMetaEl.textContent = metaParts.join(' • ');
 
-    // Simple fade-in animation via CSS class
     captionTitleEl.classList.remove('caption-fade-in');
     captionDescEl.classList.remove('caption-fade-in');
     captionMetaEl.classList.remove('caption-fade-in');
@@ -150,7 +114,6 @@
     window.SliderUtils.updateDebugOverlay(debugEl, config.debug && config.debug.enabled, toImg, effectName);
 
     window.SliderTransitions.run(effectName, currentEl, nextEl, () => {
-      // Swap roles
       const tmp = currentEl;
       currentEl = nextEl;
       nextEl = tmp;
@@ -161,7 +124,6 @@
     });
   }
 
-  // Keyboard controls (PC)
   if (config.keyboard && config.keyboard.enabled !== false) {
     window.addEventListener('keydown', (ev) => {
       switch (ev.key) {
@@ -181,7 +143,6 @@
     });
   }
 
-  // Minimal TV remote controls (Left/Right/Up/Down/OK)
   window.__sliderNext = () => goTo(1);
   window.__sliderPrev = () => goTo(-1);
   window.__toggleAutoplay = () => {
