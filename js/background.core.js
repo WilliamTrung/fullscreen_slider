@@ -1,46 +1,49 @@
-const bg = document.getElementById("bg-container");
-const audio = document.getElementById("bgm");
+// background.core.js — LG webOS SAFE EDITION
+(function () {
+    'use strict';
 
-// --- Audio setup ---
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const analyser = audioCtx.createAnalyser();
-analyser.fftSize = 256;
+    var bg = document.getElementById("bg-container");
+    if (!bg) {
+        console.log("No #bg-container element found.");
+        return;
+    }
 
-const source = audioCtx.createMediaElementSource(audio);
-source.connect(analyser);
-analyser.connect(audioCtx.destination);
+    // Set the background image manually (webOS safe)
+    // Make sure this path exists on USB or hosting!
+    var imgPath = "./images/background/backgroundImages.jpg";
 
-const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    // Preload image to avoid flicker
+    var img = new Image();
+    img.onload = function () {
+        bg.style.backgroundImage = "url('" + imgPath + "')";
+        bg.style.opacity = "1"; // fade in
+    };
+    img.onerror = function () {
+        console.log("Could not load background image:", imgPath);
+    };
+    img.src = imgPath;
 
-// Resume audio on user interaction (browser requirement)
-document.addEventListener("click", () => {
-    if (audioCtx.state === "suspended") audioCtx.resume();
-    if (audio.paused) audio.play();
-});
+    // --- TV-safe gentle zoom animation ---
+    // No filter(), no blur(), no WebAudio → 100% safe.
+    var scale = 1;
+    var growing = true;
 
+    function animate() {
+        // Soft zoom range (1.0 → 1.05)
+        if (growing) {
+            scale += 0.0005;
+            if (scale >= 1.05) growing = false;
+        } else {
+            scale -= 0.0005;
+            if (scale <= 1.0) growing = true;
+        }
 
-// --- Music-reactive blur engine ---
-function animate() {
-    analyser.getByteFrequencyData(dataArray);
+        bg.style.transform = "scale(" + scale.toFixed(3) + ")";
 
-    // No blur, no brightness
-    bg.style.filter = "none";
-    // // Focus on lower frequencies (bass → beats)
-    // const bassRange = dataArray.slice(0, 32);  // 0–32 bins = bass
-    // const bassAvg = bassRange.reduce((a, b) => a + b, 0) / bassRange.length;
+        requestAnimationFrame(animate);
+    }
 
-    // // Normalize (0 … 255 → 0 … 1)
-    // const level = bassAvg / 255;
+    // Start animation
+    animate();
 
-    // // Blur range: 0px (quiet) → 14px (strong beat)
-    // const blur = (level * 2).toFixed(1);
-
-    // // Brightness slightly increases on beat (optional)
-    // const brightness = 1 + level * 0.01;
-
-    // bg.style.filter = `blur(${blur}px) brightness(${brightness})`;
-
-    requestAnimationFrame(animate);
-}
-
-animate();
+})();

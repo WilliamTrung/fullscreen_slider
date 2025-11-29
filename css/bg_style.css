@@ -7,15 +7,14 @@ body {
 #bg-container {
     position: fixed;
     inset: 0;
-    background-image: url("../images/background/backgroundImages.jpg");
-    background-size: cover;
+    background-size: cover;   /* Safe */
     background-position: center;
     background-repeat: no-repeat;
-
-    filter: blur(0px) brightness(1);
-    transition: filter 0.15s ease-out; /* fast response */
-    z-index: -1;
+    opacity: 0;
+    transition: opacity 1.5s ease; /* Fade-in */
+    transform-origin: center center; /* For zoom animation */
 }
+
 
 /* The blur overlay (NOT the real image) */
 #bg-blur {
