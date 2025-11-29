@@ -31,10 +31,10 @@
     function animate() {
         // Soft zoom range (1.0 → 1.05)
         if (growing) {
-            scale += 0.0005;
+            scale += 0.00035;
             if (scale >= 1.05) growing = false;
         } else {
-            scale -= 0.0005;
+            scale -= 0.00035;
             if (scale <= 1.0) growing = true;
         }
 
