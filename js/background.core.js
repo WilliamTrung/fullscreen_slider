@@ -31,7 +31,7 @@ function animate() {
     const level = bassAvg / 255;
 
     // Blur range: 0px (quiet) → 14px (strong beat)
-    const blur = (level * 5).toFixed(1);
+    const blur = (level * 2).toFixed(1);
 
     // Brightness slightly increases on beat (optional)
     const brightness = 1 + level * 0.25;
