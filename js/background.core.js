@@ -34,7 +34,7 @@ function animate() {
     const blur = (level * 2).toFixed(1);
 
     // Brightness slightly increases on beat (optional)
-    const brightness = 1 + level * 0.25;
+    const brightness = 1 + level * 0.01;
 
     bg.style.filter = `blur(${blur}px) brightness(${brightness})`;
 
