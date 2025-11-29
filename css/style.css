@@ -5,7 +5,24 @@ html, body {
     background: black;
     overflow: hidden;
 }
+body {
+    margin: 0;
+    padding: 0;
 
+    background-image: url("./images/background/backgroundImages.jpg");
+    background-size: cover;          /* always fill the screen */
+    background-position: center;     /* keep image centered */
+    background-repeat: no-repeat;    /* no repeat */
+    background-attachment: fixed;    /* optional: parallax effect */
+    height: 100vh;                   /* ensure fullscreen */
+}
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: -1;
+}
 #slider {
     width: 100vw;
     height: 100vh;

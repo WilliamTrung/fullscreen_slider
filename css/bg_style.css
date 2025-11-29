@@ -1,0 +1,44 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#bg-container {
+    position: fixed;
+    inset: 0;
+    background-image: url("../images/background/backgroundImages.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    filter: blur(0px) brightness(1);
+    transition: filter 0.15s ease-out; /* fast response */
+    z-index: -1;
+}
+
+/* The blur overlay (NOT the real image) */
+#bg-blur {
+    position: absolute;
+    inset: 0;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: inherit;
+    background-repeat: inherit;
+
+    filter: blur(0px) brightness(1);
+    transition: filter 0.3s ease;
+    pointer-events: none; /* avoid blocking clicks */
+    z-index: 1;
+}
+
+/* smooth blur animation (applied ONLY on overlay) */
+@keyframes subtle-blur {
+    0% { filter: blur(0px) brightness(1); }
+    50% { filter: blur(8px) brightness(1); }
+    100% { filter: blur(0px) brightness(1); }
+}
+
+#bg-blur.animate-blur {
+    animation: subtle-blur 12s ease-in-out infinite;
+}

@@ -3,23 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fullscreen Slider</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Fullscreen Background</title>
+    <link rel="stylesheet" href="./css/bg_style.css" />
 </head>
 <body>
-    <div id="slider" class="slider-container"></div>
-
-    <div id="caption-container" class="caption-box">
-        <div id="caption-title"></div>
-        <div id="caption-description"></div>
-        <div id="caption-meta"></div>
+    <audio id="bgm"></audio>
+    <div id="bg-container">
+        <div id="bg-blur"></div>
     </div>
 
-    <div id="debug-overlay" class="debug-overlay"></div>
-    <audio id="bgm"></audio>
 
-    <script src="js/slider.utils.js"></script>
-    <script src="js/slider.transitions.js"></script>
+    <script src="js/background.core.js"></script>
     <script src="js/slider.core.js"></script>
 </body>
 </html>
