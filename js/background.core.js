@@ -23,20 +23,22 @@ document.addEventListener("click", () => {
 function animate() {
     analyser.getByteFrequencyData(dataArray);
 
-    // Focus on lower frequencies (bass → beats)
-    const bassRange = dataArray.slice(0, 32);  // 0–32 bins = bass
-    const bassAvg = bassRange.reduce((a, b) => a + b, 0) / bassRange.length;
+    // No blur, no brightness
+    bg.style.filter = "none";
+    // // Focus on lower frequencies (bass → beats)
+    // const bassRange = dataArray.slice(0, 32);  // 0–32 bins = bass
+    // const bassAvg = bassRange.reduce((a, b) => a + b, 0) / bassRange.length;
 
-    // Normalize (0 … 255 → 0 … 1)
-    const level = bassAvg / 255;
+    // // Normalize (0 … 255 → 0 … 1)
+    // const level = bassAvg / 255;
 
-    // Blur range: 0px (quiet) → 14px (strong beat)
-    const blur = (level * 2).toFixed(1);
+    // // Blur range: 0px (quiet) → 14px (strong beat)
+    // const blur = (level * 2).toFixed(1);
 
-    // Brightness slightly increases on beat (optional)
-    const brightness = 1 + level * 0.01;
+    // // Brightness slightly increases on beat (optional)
+    // const brightness = 1 + level * 0.01;
 
-    bg.style.filter = `blur(${blur}px) brightness(${brightness})`;
+    // bg.style.filter = `blur(${blur}px) brightness(${brightness})`;
 
     requestAnimationFrame(animate);
 }
