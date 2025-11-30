@@ -14,6 +14,10 @@
     const config = {
         music: {
             sources: [
+                "./music/all_of_me.mp3",
+                "./music/enchanted.mp3",
+                "./music/love_story.mp3",
+                "./music/you_belong_with_me.mp3"
             ],
             shuffle: true,
             volume: 1
